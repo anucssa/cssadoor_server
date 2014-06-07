@@ -14,5 +14,6 @@ end
 
 get('/') do
   content_type 'text/json'
+  response.headers['Access-Control-Allow-Origin'] = '*'
   JSON.generate({state: state})
 end
