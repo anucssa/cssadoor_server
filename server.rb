@@ -17,3 +17,11 @@ get('/') do
   response.headers['Access-Control-Allow-Origin'] = '*'
   JSON.generate({state: state})
 end
+
+options('/') do
+  response.headers['Access-Control-Allow-Origin'] = '*'
+  response.headers['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE, OPTIONS'
+  response.headers['Access-Control-Allow-Headers'] =  'Content-Type, Authorization, X-Requested-With'
+  response.headers['Access-Control-Max-Age'] = '1000'
+  200
+end
