@@ -1,9 +1,18 @@
 require 'sinatra'
+require 'json'
 
-post('/update_state') do
-  200
+secret_token = ENV['SECRET_TOKEN']
+state = :unknown
+
+puts secret_token
+
+get('/update_state') do
+  puts params
+  return 403 if params['token'] != secret_token
+  params['state'] == 'open' ? state = :open : state = :closed
 end
 
 get('/') do
-  "Hello world"
+  content_type 'text/json'
+  JSON.generate({state: state})
 end
