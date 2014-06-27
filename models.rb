@@ -13,7 +13,7 @@ else
 end
 
 ActiveRecord::Base.establish_connection(
-  :adapter  => db.scheme == 'mysql2' ? 'mysql2' : db.scheme,
+  :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
   :host     => db.host,
   :username => db.user,
   :password => db.password,
