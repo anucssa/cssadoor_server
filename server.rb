@@ -8,8 +8,10 @@ secret_token = ENV['SECRET_TOKEN']
 get('/update_state') do
   puts params
   return 403 if params['token'] != secret_token
-  params['state'] == 'open' ? state = :open : state = :closed
-  Entry.create(state: state) unless state == Entry.all.last.state
+  params['state'] == 'open' ? state = 'open' : state = 'closed'
+  last = Entry.all.last
+  last_state = -> () { last ? last.state : nil }.()
+  Entry.create(state: state) unless last_state == state
 end
 
 get('/') do
