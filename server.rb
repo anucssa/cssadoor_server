@@ -1,22 +1,31 @@
 require 'sinatra'
 require 'json'
 
-secret_token = ENV['SECRET_TOKEN']
-state = :unknown
+require_relative 'models'
 
-puts secret_token
+secret_token = ENV['SECRET_TOKEN']
 
 get('/update_state') do
   puts params
   return 403 if params['token'] != secret_token
   params['state'] == 'open' ? state = :open : state = :closed
+  Entry.create(state: state) unless state == Entry.all.last.state
 end
 
 get('/') do
   content_type 'text/json'
   response.headers['Access-Control-Allow-Origin'] = '*'
-  JSON.generate({state: state})
+  current = Entry.all.last
+  JSON.generate({state: current ? current.state : 'unknown', since: current.updated_at})
 end
+
+get('/history') do
+  content_type 'text/json'
+  response.headers['Access-Control-Allow-Origin'] = '*'
+  history = Entry.all.limit(1000)
+  JSON.generate(history.map {|i| {state: i.state, since: i.updated_at} })
+end
+
 
 options('/') do
   response.headers['Access-Control-Allow-Origin'] = '*'
